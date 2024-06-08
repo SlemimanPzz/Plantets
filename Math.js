@@ -1109,3 +1109,11 @@ class Matrix4 {
     ];
   }
 }
+
+
+let identity = new Matrix4(
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 1
+)

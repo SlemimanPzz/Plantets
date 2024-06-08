@@ -1,14 +1,17 @@
 class Esfera {
   /**
    */
-  constructor(gl, radius=1, Nu=8, Nv=8, material=new FlatMaterial(gl), transform=identity()) {
+  constructor(gl, radius=1, Nu=8, Nv=8, material=new FlatMaterial(gl), transform=identity) {
     this.material = material;
     this.transform = transform;
+    this.iTransform = transform;
 
     this.r = radius;
     this.Nu = Nu;
     this.Nv = Nv;
 
+    this.translacion = 0;
+    this.rotacion = 0;
     this.init(gl);
   }
 
@@ -24,6 +27,7 @@ class Esfera {
 
     this.createFlatVAO(gl);
   }
+
 
   /**
    */

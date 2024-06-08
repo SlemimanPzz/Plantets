@@ -8,30 +8,88 @@
   <script src="Math.js"></script>
 
   <!-- <script src="Geometry/GenericGeometry.js"></script> -->
-  <script src="Geometry/Cilindro.js"></script>
-  <script src="Geometry/Cono.js"></script>
-  <script src="Geometry/Dodecaedro.js"></script>
   <script src="Geometry/Esfera.js"></script>
-  <script src="Geometry/Icosaedro.js"></script>
-  <script src="Geometry/Octaedro.js"></script>
-  <script src="Geometry/PrismaRectangular.js"></script>
-  <script src="Geometry/Tetraedro.js"></script>
   <script src="Geometry/Toroide.js"></script>
+  <script src="Geometry/Planet.js"></script>
+  <script src="Geometry/Sun.js"></script>
+  <script src="Geometry/Skybox.js"></script>
+  <script src="Geometry/Plano.js"></script>
 
   <script src="utils/Utils.js"></script>
   <script src="utils/Camera.js"></script>
   <script src="utils/OrbitalCamera.js"></script>
+  <script src="utils/MoveCamera.js"></script>
 
   <script src="materials/Material.js"></script>
+  <script src="materials/PhongTextureMaterial.js"></script>
   <script src="materials/FlatMaterial.js"></script>
   <script src="materials/PhongMaterial.js"></script>
   <script src="materials/TextureMaterial.js"></script>
+  <script src="materials/TextureAlphaMaterial.js"></script>
 
   <script src="Main.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    #button-container {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      background-color: rgba(0, 0, 0, 0.5); /* semi-transparent background */
+      padding: 10px 0;
+    }
+
+    .hud-button {
+      margin: 0 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .hud-button:hover {
+      background-color: #45a049;
+    }
+  </style>
 </head>
 
 <body>
-  <canvas id="the_canvas" width="800" height="600" style="background:#dfe6e9"></canvas>
+<canvas id="the_canvas" style="background:#000000"></canvas>
+<div id="button-container">
+  <button class="hud-button" id="reset_camera_pos">Reset Camera Pos</button>
+  <button class="hud-button" id="button2">Button 2</button>
+  <button class="hud-button" id="button3">Button 3</button>
+</div>
+
+
+<script>
+  function resizeCanvas() {
+    const canvas = document.getElementById('the_canvas');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+  window.addEventListener('load', resizeCanvas);
+</script>
 </body>
 
 </html>
