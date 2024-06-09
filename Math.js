@@ -100,7 +100,7 @@ class Vector3 {
    * @return {Vector3}
    */
   normalize() {
-    var l = Math.sqrt( this.x**2 + this.y**2 + this.z**2 );
+    const l = Math.sqrt(this.x ** 2 + this.y ** 2 + this.z ** 2);
 
     if (l !== 0) {
       return new Vector3(
@@ -978,10 +978,10 @@ class Matrix4 {
     let c = Math.cos(theta);
     let s = Math.sin(theta);
     return new Matrix4(
-       c,  0,  s,  0,
-       0,  1,  0,  0,
-      -s,  0,  c,  0,
-       0,  0,  0,  1
+        c,  0,  s,  0,
+        0,  1,  0,  0,
+        -s,  0,  c,  0,
+        0,  0,  0,  1
     );
   }
 
@@ -994,10 +994,10 @@ class Matrix4 {
     let c = Math.cos(theta);
     let s = Math.sin(theta);
     return new Matrix4(
-       c, -s,  0,  0,
-       s,  c,  0,  0,
-       0,  0,  0,  0,
-       0,  0,  0,  1
+        c, -s,  0,  0,
+        s,  c,  0,  0,
+        0,  0,  1,  0,
+        0,  0,  0,  1
     );
   }
 

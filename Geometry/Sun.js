@@ -1,17 +1,16 @@
 class Sun {
     /**
      */
-    constructor(gl, radius=1, Nu=8, Nv=8, material=new FlatMaterial(gl), transform=identity) {
+    constructor(gl, radius=1, material=new FlatMaterial(gl), transform=identity) {
         this.material = material;
         this.transform = transform;
-        this.iTransform = transform;
 
         this.r = radius;
-        this.Nu = Nu;
-        this.Nv = Nv;
+        this.Nu = 32;
+        this.Nv = 32;
 
-        this.translacion = 0;
-        this.rotacion = 0;
+        this.gl = gl;
+
         this.init(gl);
     }
 
@@ -28,11 +27,15 @@ class Sun {
         this.createFlatVAO(gl);
     }
 
+
+    updateSize(scale){
+        this.r = scale
+        this.init(this.gl)
+    }
+
+
     update(elapsed) {
-        //let rot = Matrix4.multiply(Matrix4.rotateY(this.rotacion += 3*elapsed ), identity);
-        //let inter = Matrix4.multiply(this.iTransform, rot);
-        //this.transform = Matrix4.multiply(Matrix4.rotateY(this.translacion += elapsed), inter);
-        //this.transform = Matrix4.multiply(Matrix4.rotateY(this.translacion += elapsed), inter);
+        // No actualizamos al sol, ya que siempre estara en el centro
     }
 
     /**

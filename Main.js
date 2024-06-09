@@ -8,108 +8,232 @@ window.addEventListener("load", async function(evt) {
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
     let texEarth = await loadImage("texturas/8k_earth_daymap.png");
-    let texMercurio = await loadImage("texturas/mercurio.png");
+    let texMercury = await loadImage("texturas/mercurio.png");
+    let texVenus = await loadImage("texturas/2k_venus_surface.png")
     let texMarte = await loadImage("texturas/mars.png");
     let texJupiter = await loadImage("texturas/2k_jupiter.png");
-    let texSaturn = await loadImage("texturas/saturn.png")
+    let texSaturn = await loadImage("texturas/2k_saturn.png")
     let skyboxTex = await loadImage("texturas/2k_stars_milky_way.png");
     let saturnRing = await loadImage("texturas/saturn_ring.png")
     let texNeptune = await loadImage("texturas/2k_neptune.png")
+    let texUranus = await loadImage("texturas/2k_uranus.png")
 
-    let earthSize = 1;       // Earth's diameter
-    let earthRotate = 1;     // Earth's rotation period (length of day)
-    let earthTranslate = 1;  // Earth's orbital period (year)
-
-    let sunSize = 109 * earthSize;
-
-// Mercury
-    let mercurySize = 0.383 * earthSize;
-    let mercuryRotate = 175.9416666667 * earthRotate;
-    let mercuryTranslate = 4.147 * earthTranslate;
-
-// Venus
-    let venusSize = 0.949 * earthSize;
-    let venusRotate = 116.75 * earthRotate;
-    let venusTranslate = -1.622 * earthTranslate;
-
-// Moon
-    let moonSize = 0.2724 * earthSize;
-    let moonRotate = 29.5 * earthRotate;
-    let moonTranslate = 0.0748 * earthTranslate;
-
-// Mars
-    let marsSize = 0.532 * earthSize;
-    let marsRotate = 1.02916666667 * earthRotate;
-    let marsTranslate = 0.531 * earthTranslate;
-
-// Jupiter
-    let jupiterSize = 11.21 * earthSize;
-    let jupiterRotate = 0.4125 * earthRotate;
-    let jupiterTranslate = 0.08423724902 * earthTranslate;
-
-// Saturn
-    let saturnSize = 9.45 * earthSize;
-    let saturnRotate = 0.4458333333 * earthRotate;
-    let saturnTranslate = 0.03392508597 * earthTranslate;
-
-// Uranus
-    let uranusSize = 4.01 * earthSize;
-    let uranusRotate = 17.2 * earthRotate;
-    let uranusTranslate = 0.01189428748 * earthTranslate;
-
-// Neptune
-    let neptuneSize = 3.88 * earthSize;
-    let neptuneRotate = 16.1 * earthRotate;
-    let neptuneTranslate = 0.0061 * earthTranslate;
 
 
   function update(elapse) {
       geometry[0].update(camera.pos)
-      for (let i=2; i<geometry.length; i++) {
+      for (let i=0; i<geometry.length; i++) {
           geometry[i].update(elapse);
       }
   }
 
+    let initCameraPos = new Vector3(10, 20, 0)
+    let initCameraCoi = new Vector3(10, -1, 0)
+    let initCameraUp =   new Vector3(0, 1, 0)
+
+  function planetPosAndRot(pos, theta) {
+    return Matrix4.multiply(Matrix4.translate(new Vector3(pos, 0, 0)) ,Matrix4.rotateZ(theta))
+  }
 
   let geometry = [
       //skybox
       new Skybox(gl, 500, 16, 16, new TextureMaterial(gl, skyboxTex)),
       //Sun
-      new Sun(gl, earthSize*2,16,16, new FlatMaterial(gl, [1,1,1,1]), Matrix4.translate(new Vector3(0, 0, 0))),
+      new Sun(gl, sunSizeSmall, new FlatMaterial(gl, [1,1,1,1]), Matrix4.translate(new Vector3(0, 0, 0))),
+      // Anillo Saturno
+      new PlanetRing(gl, new TextureAlphaMaterial(gl, saturnRing), planetPosAndRot(60, .45), true, saturnTranslate, saturnSize),
       // Mercurio
-      new Planet(gl, mercurySize, 16, 16, new TexturedPhongMaterial(gl, texMercurio, [0.1,0.1,0.1], [1,1,1], [0,0,0]), Matrix4.translate(new Vector3(5, 0, 0)),
+      new Planet(gl, mercurySize, new TexturedPhongMaterial(gl, texMercury, [0.1,0.1,0.1], [1,1,1], [0,0,0]), planetPosAndRot(5,0),
       mercuryRotate, mercuryTranslate, true),
       //Venus
-      new Planet(gl, venusSize, 16, 16, new TexturedPhongMaterial(gl, texMercurio, [0.1,0.1,0.1], [1,1,1], [0,0,0]), Matrix4.translate(new Vector3(7.5, 0, 0)),
+      new Planet(gl, venusSize, new TexturedPhongMaterial(gl, texVenus, [0.1,0.1,0.1], [1,1,1], [0,0,0]),planetPosAndRot(7, 3.089),
           venusRotate, venusTranslate, true),
       // Tierra
-      new Planet(gl, earthSize, 16, 16, new TexturedPhongMaterial(gl, texEarth, [0.1,0.1,0.1], [1,1,1], [0,0,0]), Matrix4.translate(new Vector3(10, 0, 0)),
+      new Planet(gl, earthSize,  new TexturedPhongMaterial(gl, texEarth, [0.1,0.1,0.1], [1,1,1], [0,0,0]), planetPosAndRot(10, .45),
           earthRotate, earthTranslate),
       // Mars
-      new Planet(gl, marsSize, 16, 16, new TexturedPhongMaterial(gl, texMarte, [0.1,0.1,0.1], [1,1,1], [0,0,0]), Matrix4.translate(new Vector3(14, 0, 0)),
+      new Planet(gl, marsSize,  new TexturedPhongMaterial(gl, texMarte, [0.1,0.1,0.1], [1,1,1], [0,0,0]), planetPosAndRot(14, .44),
       marsRotate, marsTranslate),
       //Jupiter
-      new Planet(gl, jupiterSize, 16, 16, new TexturedPhongMaterial(gl, texJupiter, [0.1,0.1,0.1], [1,1,1], [0,0,0]), Matrix4.translate(new Vector3(40, 0, 0)),
+      new Planet(gl, jupiterSize,  new TexturedPhongMaterial(gl, texJupiter, [0.1,0.1,0.1], [1,1,1], [0,0,0]),planetPosAndRot(30, .05),
           jupiterRotate, jupiterTranslate),
       //Saturn
-      new Planet(gl, saturnSize, 16, 16, new TexturedPhongMaterial(gl, texSaturn, [0.1,0.1,0.1], [1,1,1], [0,0,0]), Matrix4.translate(new Vector3(60, 0, 0)),
+      new Planet(gl, saturnSize,  new TexturedPhongMaterial(gl, texSaturn, [0.1,0.1,0.1], [1,1,1], [0,0,0]), planetPosAndRot(60, .45),
           saturnRotate, saturnTranslate),
-      // Anillo
-      // new Plano(gl, new TextureAlphaMaterial(gl, saturnRing),Matrix4.translate(new Vector3(60, 0, 0)), true, saturnTranslate),
       // Urano
-      //new Planet(gl, uranusSize, 16, 16, new TexturedPhongMaterial(gl, texSaturn, [0.1,0.1,0.1], [1,1,1], [0,0,0]), Matrix4.translate(new Vector3(20, 0, 0)),
-      //    uranusRotate, uranusTranslate),
+      new Planet(gl, uranusSize,  new TexturedPhongMaterial(gl, texUranus, [0.1,0.1,0.1], [1,1,1], [0,0,0]), planetPosAndRot(80, 1.69),
+          uranusRotate, uranusTranslate),
       // Neptune
-      new Planet(gl, neptuneSize, 16, 16, new TexturedPhongMaterial(gl, texNeptune, [0.1,0.1,0.1], [1,1,1], [0,0,0]), Matrix4.translate(new Vector3(80, 0, 0)),
+      new Planet(gl, neptuneSize, new TexturedPhongMaterial(gl, texNeptune, [0.1,0.1,0.1], [1,1,1], [0,0,0]), planetPosAndRot(90, .49),
           neptuneRotate, neptuneTranslate),
   ];
 
-  let camera = new MoveCamera(
-    new Vector3(0, 25, 1),
-    new Vector3(0, 0, 0),
-    new Vector3(0, 1, 0),
-  );
-  
+    function createTextBoxes() {
+        const container = document.getElementById('planet-controls');
+        const divSun = document.createElement('div');
+        divSun.classList.add('textbox-container');
+        divSun.innerHTML = `
+            <h3>Sun</h3>
+            <div class="textbox-group">
+                <label for="Sun-radius">Radius (Original ${sunSize})</label>
+                <input type="text" id="Sun-radius" value="${sunSizeSmall}" step="0.01">
+            </div>
+        `;
+        container.appendChild(divSun);
+        for (let i = 0; i < originalValues.length; i++) {
+            const planet = originalValues[i];
+            const div = document.createElement('div');
+            div.classList.add('textbox-container');
+            div.innerHTML = `
+            <h3>${planet.name}</h3>
+            <div class="textbox-group">
+                <label for="${planet.name}-radius">Radius (Original ${planet.radius})</label>
+                <input type="text" id="${planet.name}-radius" value="${planet.radius}" step="0.01">
+            </div>
+            <div class="textbox-group">
+                <label for="${planet.name}-rotSpeed">Rotation Speed (Original ${planet.rotSpeed})</label>
+                <input type="text" id="${planet.name}-rotSpeed" value="${planet.rotSpeed}" step="0.01">
+            </div>
+            <div class="textbox-group">
+                <label for="${planet.name}-tranSpeed">Translation Speed (Original ${planet.tranSpeed})</label>
+                <input type="text" id="${planet.name}-tranSpeed" value="${planet.tranSpeed}" step="0.01">
+            </div>
+            <div class="textbox-group">
+            <label for="${planet.name}-orbitDist">Orbit Distance (Original ${planet.orbitDist})</label>
+            <input type="text" id="${planet.name}-orbitDist" value="${planet.orbitDist}" step="0.01">
+            </div>
+        `;
+            container.appendChild(div);
+        }
+
+
+    }
+
+    function updatePlanetsFromTextBoxes() {
+        const radius = parseFloat(document.getElementById(`Sun-radius`).value);
+        if(!isNaN(radius)) {
+            geometry[1].updateSize(radius)
+        }
+        for (let i = 0; i < originalValues.length; i++) {
+            const planet = originalValues[i];
+            const radius = parseFloat(document.getElementById(`${planet.name}-radius`).value);
+            const rotSpeed = parseFloat(document.getElementById(`${planet.name}-rotSpeed`).value);
+            const tranSpeed = parseFloat(document.getElementById(`${planet.name}-tranSpeed`).value);
+            const orbitDist = parseFloat(document.getElementById(`${planet.name}-orbitDist`).value);
+
+            if (!isNaN(radius) && !isNaN(rotSpeed) && !isNaN(tranSpeed)) {
+                geometry[i + 3].updateSize(radius);
+                geometry[i + 3].updateRotSpeed(rotSpeed);
+                geometry[i + 3].updateTransSpeed(tranSpeed);
+                geometry[i + 3].updatePos(planetPosAndRot(orbitDist, planet.planetRot))
+            }
+            //Actualizar Anillo de saturno
+            if (i == 5) {
+                geometry[2].updateScale(radius)
+            }
+        }
+    }
+
+    function resetSunSize() {
+        document.getElementById('Sun-radius').value = sunSize;
+        updatePlanetsFromTextBoxes();
+    }
+    function resetCamera() {
+        camera.pos = initCameraPos;
+        camera.coi = initCameraCoi;
+        camera.up = initCameraUp;
+        document.getElementById('cam-pos-x').value = initCameraPos.x;
+        document.getElementById('cam-pos-y').value = initCameraPos.y;
+        document.getElementById('cam-pos-z').value = initCameraPos.z;
+        document.getElementById('cam-coi-x').value = initCameraCoi.x;
+        document.getElementById('cam-coi-y').value = initCameraCoi.y;
+        document.getElementById('cam-coi-z').value = initCameraCoi.z;
+    }
+    function setCamera() {
+        const posX = parseFloat(document.getElementById('cam-pos-x').value);
+        const posY = parseFloat(document.getElementById('cam-pos-y').value);
+        const posZ = parseFloat(document.getElementById('cam-pos-z').value);
+        const coiX = parseFloat(document.getElementById('cam-coi-x').value);
+        const coiY = parseFloat(document.getElementById('cam-coi-y').value);
+        const coiZ = parseFloat(document.getElementById('cam-coi-z').value);
+
+        if (!isNaN(posX) && !isNaN(posY) && !isNaN(posZ) &&
+            !isNaN(coiX) && !isNaN(coiY) && !isNaN(coiZ)) {
+            camera.pos = new Vector3(posX, posY, posZ);
+            camera.coi = new Vector3(coiX, coiY, coiZ);
+        }
+    }
+
+
+    function resetPlanets() {
+        for (let i = 0; i < originalValues.length; i++) {
+            const planet = originalValues[i];
+            document.getElementById(`${planet.name}-radius`).value = planet.radius;
+            document.getElementById(`${planet.name}-rotSpeed`).value = planet.rotSpeed;
+            document.getElementById(`${planet.name}-tranSpeed`).value = planet.tranSpeed;
+            document.getElementById(`${planet.name}-orbitDist`).value = planet.orbitDist;
+        }
+        updatePlanetsFromTextBoxes();
+    }
+
+    function resetAll() {
+        resetSunSize();
+        resetPlanets();
+        resetCamera();
+    }
+
+
+    const style = document.createElement('style');
+    style.innerHTML = `
+    .planet-container {
+        border: 1px solid #ccc;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+    .textbox-group {
+        margin-bottom: 10px;
+    }
+    .textbox-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    .textbox-group input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    .control-button {
+        display: inline-block;
+        margin: 10px 5px;
+        padding: 10px 20px;
+        font-size: 16px;
+        color: #fff;
+        background-color: #007bff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .control-button:hover {
+        background-color: #0056b3;
+    }
+`;
+    document.head.appendChild(style);
+
+    createTextBoxes();
+
+    document.getElementById('planet-controls').addEventListener('input', updatePlanetsFromTextBoxes);
+    document.getElementById('reset_sun').addEventListener('click', resetSunSize);
+    document.getElementById('reset_planets').addEventListener('click', resetPlanets);
+    document.getElementById('reset_cam').addEventListener('click', resetCamera);
+    document.getElementById('reset_all').addEventListener('click', resetAll);
+    document.getElementById('set_camera').addEventListener('click', setCamera);
+
+    let camera = new MoveCamera(initCameraPos, initCameraCoi, initCameraUp);
+
   let projectionMatrix = Matrix4.perspective(75*Math.PI/180, canvas.width/canvas.height, 1, 2000);
 
   let lightPosition = new Vector4(0,0,0,1);
@@ -117,7 +241,7 @@ window.addEventListener("load", async function(evt) {
   gl.enable(gl.DEPTH_TEST);
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
   gl.clearColor(0, 0, 0, 0);
-  
+
   function draw() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -125,17 +249,10 @@ window.addEventListener("load", async function(evt) {
     let trans_lightPosition = viewMatrix.multiplyVector(lightPosition);
 
     for (let i=0; i<geometry.length; i++) {
-
-      let light =
-          {
-            position : viewMatrix.multiplyVector(lightPosition),
-            color : [1,1,1],
-            colorD : [1,1,1],
-            colorS : [1,1,1]
-          }
-      geometry[i].draw( 
+        viewMatrix.multiplyVector(lightPosition);
+        geometry[i].draw(
         gl,
-        projectionMatrix, 
+        projectionMatrix,
         viewMatrix,
         {
           pos: [
@@ -170,10 +287,8 @@ window.addEventListener("load", async function(evt) {
     window.requestAnimationFrame(gameLoop);
   }
 
-  // la cámara registra su manejador de eventos
   camera.registerMouseEvents(gl.canvas, draw);
   gameLoop();
-
 
     window.addEventListener("keydown", (evt) => {
         console.log(evt.key);
@@ -196,13 +311,6 @@ window.addEventListener("load", async function(evt) {
         }
 
     });
-
-    document.getElementById('reset_camera_pos').addEventListener('click', () => {
-            camera.pos = new Vector3(0, 25, 1);
-             camera.coi = new Vector3(0, 0, 0);
-            camera.up = new Vector3(0, 1, 0);
-    });
-    document.getElementById('button2').addEventListener('click', () => buttonAction('Button 2'));
-    document.getElementById('button3').addEventListener('click', () => buttonAction('Button 3'));
-  //draw()
 });
+
+

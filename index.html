@@ -3,22 +3,19 @@
 
 <head>
   <meta charset="utf-8" />
-  <title>Page Title</title>
+  <title>Planet Controls</title>
 
   <script src="Math.js"></script>
 
   <!-- <script src="Geometry/GenericGeometry.js"></script> -->
-  <script src="Geometry/Esfera.js"></script>
-  <script src="Geometry/Toroide.js"></script>
   <script src="Geometry/Planet.js"></script>
   <script src="Geometry/Sun.js"></script>
   <script src="Geometry/Skybox.js"></script>
-  <script src="Geometry/Plano.js"></script>
+  <script src="Geometry/PlanetRing.js"></script>
 
   <script src="utils/Utils.js"></script>
-  <script src="utils/Camera.js"></script>
-  <script src="utils/OrbitalCamera.js"></script>
   <script src="utils/MoveCamera.js"></script>
+  <script src="utils/PlanetInfo.js"></script>
 
   <script src="materials/Material.js"></script>
   <script src="materials/PhongTextureMaterial.js"></script>
@@ -43,48 +40,93 @@
       height: 100%;
     }
 
-    #button-container {
+    .side-menu {
       position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      background-color: rgba(0, 0, 0, 0.5); /* semi-transparent background */
-      padding: 10px 0;
+      top: 0;
+      width: 200px;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 20px;
+      box-sizing: border-box;
+      overflow-y: auto;
+      transition: right 0.3s;
     }
 
-    .hud-button {
-      margin: 0 10px;
+    #left-menu {
+      left: 0;
+    }
+
+    #right-menu {
+      right: 0;
+    }
+
+    #right-menu.hidden {
+      right: -220px; /* Adjust this if needed */
+    }
+
+    .menu-title {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    #toggle-button {
+      position: absolute;
+      top: 20px;
+      right: 220px;
+      z-index: 10;
       padding: 10px 20px;
-      font-size: 16px;
-      background-color: #4CAF50;
+      background-color: rgba(0, 0, 0, 0.8);
       color: white;
       border: none;
-      border-radius: 5px;
       cursor: pointer;
-    }
-
-    .hud-button:hover {
-      background-color: #45a049;
     }
   </style>
 </head>
 
 <body>
 <canvas id="the_canvas" style="background:#000000"></canvas>
-<div id="button-container">
-  <button class="hud-button" id="reset_camera_pos">Reset Camera Pos</button>
-  <button class="hud-button" id="button2">Button 2</button>
-  <button class="hud-button" id="button3">Button 3</button>
+
+<div id="left-menu" class="side-menu">
+  <div class="menu-title">Planet Controls</div>
+  <button class="menu-button" id="reset_sun">Reset Sun Size</button>
+  <div id="planet-controls"></div>
 </div>
 
+<div id="right-menu" class="side-menu hidden">
+  <div class="menu-title">General Controls</div>
+  <div id="menu-controls"></div>
+  <button class="menu-button" id="reset_cam">Reset Camera</button>
+  <button class="menu-button" id="reset_planets">Reset Planets</button>
+  <button class="menu-button" id="set_camera">Set Camera</button>
+  <button class="menu-button" id="reset_all">Reset All</button>
+  <div class="menu-title">Camera Controls</div>
+  <div class="textbox-group">
+    <label>Camera Position</label>
+    <input type="text" id="cam-pos-x" placeholder="X">
+    <input type="text" id="cam-pos-y" placeholder="Y">
+    <input type="text" id="cam-pos-z" placeholder="Z">
+  </div>
+  <div class="textbox-group">
+    <label>Camera COI</label>
+    <input type="text" id="cam-coi-x" placeholder="X">
+    <input type="text" id="cam-coi-y" placeholder="Y">
+    <input type="text" id="cam-coi-z" placeholder="Z">
+  </div>
+</div>
+
+<button id="toggle-button" onclick="toggleRightMenu()">Toggle Menus</button>
 
 <script>
   function resizeCanvas() {
     const canvas = document.getElementById('the_canvas');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+  }
+
+  function toggleRightMenu() {
+    const rightMenu = document.getElementById('right-menu');
+    rightMenu.classList.toggle('hidden');
   }
 
   window.addEventListener('resize', resizeCanvas);
