@@ -29,12 +29,13 @@ class Planet {
             this.faces = this.getFaces();
             this.createSmoothVAO(gl);
         }
+
+        this.createFlatVAO(gl);
     }
 
     updatePos(pos) {
         this.iTransform = pos
     }
-
 
     updateSize(scale){
         this.r = scale
@@ -61,12 +62,14 @@ class Planet {
 
     // Update esta hecho para que un año en la tierra sea 30 segundos
     update(elapsed) {
+        return
         if (this.toUpdate){
-            let rot = Matrix4.rotateY(this.rotacion += this.getThetaRotacion(elapsed)/this.rotSpeed);
+            let rot = Matrix4.rotateY(this.rotacion += this.getThetaRotacion(elapsed)/this.rotSpeed/10);
             let inter = Matrix4.multiply(this.iTransform, rot);
             this.transform = Matrix4.multiply(Matrix4.rotateY(this.translacion += this.transSpeed*this.getThetaTranslation(elapsed)), inter);
         }
     }
+
 
     /**
      */
@@ -113,6 +116,50 @@ class Planet {
 
 
         this.num_smooth_elements = this.faces.length;
+    }
+
+    /**
+     */
+    createFlatVAO(gl) {
+        let vertices = (this.faces) ? this.getFlatVertices(this.vertices, this.faces) : this.vertices;
+
+        this.flatVAO = gl.createVertexArray();
+        gl.bindVertexArray(this.flatVAO);
+
+        //////////////////////////////////////////////////
+        let positionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+        gl.enableVertexAttribArray(this.material.getAttribute("a_position"));
+        gl.vertexAttribPointer(this.material.getAttribute("a_position"), 3, gl.FLOAT, false, 0, 0);
+
+
+        //////////////////////////////////////////////////
+        if (this.material.getAttribute("a_normal") != undefined) {
+            let normals = this.getFlatNormals(vertices);
+            let normalBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
+            gl.enableVertexAttribArray(this.material.getAttribute("a_normal"));
+            gl.vertexAttribPointer(this.material.getAttribute("a_normal"), 3, gl.FLOAT, false, 0, 0);
+        }
+
+        //////////////////////////////////////////////////
+        if ((this.getUVCoordinates) && (this.material.getAttribute("a_texcoord") != undefined)) {
+            let uv = this.getUVCoordinates(vertices, true);
+            let uvBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(uv), gl.STATIC_DRAW);
+            gl.enableVertexAttribArray(this.material.getAttribute("a_texcoord"));
+            gl.vertexAttribPointer(this.material.getAttribute("a_texcoord"), 2, gl.FLOAT, false, 0, 0);
+        }
+
+        //////////////////////////////////////////////////
+        gl.bindVertexArray(null);
+        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+
+        this.num_flat_elements = vertices.length/3;
     }
 
 
@@ -192,8 +239,11 @@ class Planet {
 
 
         // Smooth shading
-        gl.bindVertexArray(this.smoothVAO);
-        gl.drawElements(gl.TRIANGLES, this.num_smooth_elements, gl.UNSIGNED_SHORT, 0);
+            gl.bindVertexArray(this.smoothVAO);
+            gl.drawElements(gl.TRIANGLES, this.num_smooth_elements, gl.UNSIGNED_SHORT, 0);
+        // Flat shading
+            gl.bindVertexArray(this.flatVAO);
+            gl.drawArrays(gl.TRIANGLES, 0, this.num_flat_elements);
 
         gl.bindVertexArray(null);
     }
@@ -251,6 +301,52 @@ class Planet {
         return normals;
     }
 
+    /**
+     */
+    getFlatVertices(vertices, faces) {
+        let flat_vertices = [];
+        this.flat_uv = [];
+
+        for (let i=0, l=faces.length; i<l; i++) {
+            flat_vertices.push(
+                vertices[faces[i]*3],    // x
+                vertices[faces[i]*3 +1], // y
+                vertices[faces[i]*3 +2], // z
+            );
+            if (this.smooth_uv) {
+                this.flat_uv.push(
+                    this.smooth_uv[faces[i]*2], // u
+                    this.smooth_uv[faces[i]*2 +1], // v
+                );
+            }
+        }
+
+        return flat_vertices;
+    }
+
+    /**
+     */
+    getFlatNormals(vertices) {
+        let normals = [];
+        let v1, v2, v3;
+        let n;
+
+        for (let i=0; i<vertices.length; i+=9) {
+            v1 = { x: vertices[i  ], y: vertices[i+1], z: vertices[i+2] };
+            v2 = { x: vertices[i+3], y: vertices[i+4], z: vertices[i+5] };
+            v3 = { x: vertices[i+6], y: vertices[i+7], z: vertices[i+8] };
+
+            n = (Vector3.cross(Vector3.subtract(v1, v2), Vector3.subtract(v2, v3))).normalize();
+
+            normals.push(
+                n.x, n.y, n.z,
+                n.x, n.y, n.z,
+                n.x, n.y, n.z
+            );
+        }
+
+        return normals;
+    }
 
     /**
      */
@@ -317,21 +413,72 @@ class Planet {
         return faces;
     }
 
+    /**
+     */
     getUVCoordinates(vertices, isFlat) {
         let uv = [];
-
         let PI2 = Math.PI*2;
 
-            let p;
+        if (!isFlat) {
+            let p, u, v;
 
             for (let i=0, l=vertices.length/3; i<l; i++) {
-                p = new Vector3(vertices[i*3], vertices[i*3 +1],vertices[i*3 +2]).normalize();
+                p = new Vector3(vertices[i*3], vertices[i*3 +1], vertices[i*3 +2]).normalize();
 
-                let u = 0.5 + (Math.atan2(p.x, p.z) / PI2) // U
-                let v = 0.5 + (Math.asin(p.y) / Math.PI) // V
-                uv.push(u,v);
+                uv.push(
+                    0.5 + (Math.atan2(p.z, p.x) / PI2),
+                    0.5 + (Math.asin(p.y) / Math.PI)
+                );
             }
+        }
+        else {
+            let max_dist = 0.75;
+            let p1, p2, p3;
+            let u1, v1, u2, v2, u3, v3;
+
+            for (let i=0; i<vertices.length/3; i+=3) {
+                p1 = new Vector3(vertices[i*3], vertices[i*3 +1], vertices[i*3 +2]).normalize();
+                u1 = 0.5 + (Math.atan2(p1.z, p1.x) / PI2);
+                v1 = 0.5 + (Math.asin(p1.y) / Math.PI);
+
+                p2 = new Vector3(vertices[(i+1)*3], vertices[(i+1)*3 +1], vertices[(i+1)*3 +2]).normalize();
+                u2 = 0.5 + (Math.atan2(p2.z, p2.x) / PI2);
+                v2 = 0.5 + (Math.asin(p2.y) / Math.PI);
+
+                p3 = new Vector3(vertices[(i+2)*3], vertices[(i+2)*3 +1], vertices[(i+2)*3 +2]).normalize();
+                u3 = 0.5 + (Math.atan2(p3.z, p3.x) / PI2);
+                v3 = 0.5 + (Math.asin(p3.y) / Math.PI);
+
+                if (Math.abs(u1-u2) > max_dist) {
+                    if (u1 > u2) {
+                        u2 = 1 + u2;
+                    }
+                    else {
+                        u1 = 1 + u1;
+                    }
+                }
+                if (Math.abs(u1-u3) > max_dist) {
+                    if (u1 > u3) {
+                        u3 = 1 + u3;
+                    }
+                    else {
+                        u1 = 1 + u1;
+                    }
+                }
+                if (Math.abs(u2-u3) > max_dist) {
+                    if (u2 > u3) {
+                        u3 = 1 + u3;
+                    }
+                    else {
+                        u2 = 1 + u2;
+                    }
+                }
+
+                uv.push( u1, v1, u2, v2, u3, v3 );
+            }
+        }
 
         return uv;
     }
+
 }
