@@ -28,7 +28,7 @@ window.addEventListener("load", async function(evt) {
   }
 
     let initCameraPos = new Vector3(10, 20, 0)
-    let initCameraCoi = new Vector3(10, -1, 0)
+    let initCameraCoi = new Vector3(10, -1, -1)
     let initCameraUp =   new Vector3(0, 1, 0)
 
   function planetPosAndRot(pos, theta) {
@@ -182,6 +182,19 @@ window.addEventListener("load", async function(evt) {
         resetCamera();
     }
 
+    function playPausePlanets() {
+        for (let i=2; i<geometry.length; i++) {
+            geometry[i].toggleUpdate();
+        }
+    }
+
+    function restartPlanets() {
+        for (let i=2; i<geometry.length; i++) {
+            geometry[i].restart();
+        }
+    }
+
+
 
     const style = document.createElement('style');
     style.innerHTML = `
@@ -231,8 +244,11 @@ window.addEventListener("load", async function(evt) {
     document.getElementById('reset_cam').addEventListener('click', resetCamera);
     document.getElementById('reset_all').addEventListener('click', resetAll);
     document.getElementById('set_camera').addEventListener('click', setCamera);
+    document.getElementById('Play_pause').addEventListener('click', playPausePlanets)
+    document.getElementById('restart').addEventListener('click', restartPlanets)
 
     let camera = new MoveCamera(initCameraPos, initCameraCoi, initCameraUp);
+    resetCamera();
 
   let projectionMatrix = Matrix4.perspective(75*Math.PI/180, canvas.width/canvas.height, 1, 2000);
 

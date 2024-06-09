@@ -33,6 +33,25 @@ class Planet {
         this.createFlatVAO(gl);
     }
 
+
+    toggleUpdate(){
+        this.toUpdate = !this.toUpdate;
+    }
+
+    updateFalse() {
+        this.toUpdate = false
+    }
+
+    updateTrue() {
+        this.toUpdate = true
+    }
+
+    restart() {
+        this.rotacion = 0;
+        this.translacion = 0;
+        this.transform = this.iTransform;
+    }
+
     updatePos(pos) {
         this.iTransform = pos
     }
@@ -62,7 +81,6 @@ class Planet {
 
     // Update esta hecho para que un año en la tierra sea 30 segundos
     update(elapsed) {
-        return
         if (this.toUpdate){
             let rot = Matrix4.rotateY(this.rotacion += this.getThetaRotacion(elapsed)/this.rotSpeed/10);
             let inter = Matrix4.multiply(this.iTransform, rot);
@@ -239,8 +257,8 @@ class Planet {
 
 
         // Smooth shading
-            gl.bindVertexArray(this.smoothVAO);
-            gl.drawElements(gl.TRIANGLES, this.num_smooth_elements, gl.UNSIGNED_SHORT, 0);
+            //gl.bindVertexArray(this.smoothVAO);
+            //gl.drawElements(gl.TRIANGLES, this.num_smooth_elements, gl.UNSIGNED_SHORT, 0);
         // Flat shading
             gl.bindVertexArray(this.flatVAO);
             gl.drawArrays(gl.TRIANGLES, 0, this.num_flat_elements);
@@ -419,7 +437,7 @@ class Planet {
         let uv = [];
         let PI2 = Math.PI*2;
 
-        if (!isFlat) {
+        if (false) {
             let p, u, v;
 
             for (let i=0, l=vertices.length/3; i<l; i++) {

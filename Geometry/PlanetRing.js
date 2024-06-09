@@ -42,6 +42,23 @@ class PlanetRing {
 
     this.num_elements = vertices.length/3;
   }
+
+  toggleUpdate(){
+    this.toUpdate = !this.toUpdate;
+  }
+
+  updateFalse() {
+    this.toUpdate = false
+  }
+
+  updateTrue() {
+    this.toUpdate = true
+  }
+
+  restart() {
+    this.rot = 0;
+    this.transform = this.iTransform;
+  }
   updateScale(scale){
     let ringScale = Matrix4.scale(new Vector3(2*scale,0,2*scale))
     this.iTransform =  Matrix4.multiply(this.planetTranslate, ringScale);
