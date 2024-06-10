@@ -58,6 +58,7 @@ const realRelativeDistances = {
 };
 
 const closeDistances = [4, 7, 10,14, 30, 60, 80, 90];
+const bigSunCloseDistances = closeDistances.map( value => value+109);
 
 const originalValues = [
     { name: 'Mercury', radius: mercurySize, rotSpeed: mercuryRotate, tranSpeed: mercuryTranslate, orbitDist: 5, planetRot : 0},

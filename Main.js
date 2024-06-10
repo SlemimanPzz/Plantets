@@ -77,6 +77,8 @@ window.addEventListener("load", async function(evt) {
             <div class="textbox-group">
                 <label for="Sun-radius">Radius (Original ${sunSize})</label>
                 <input type="text" id="Sun-radius" value="${sunSizeSmall}" step="0.01">
+                <button id="sun-radius-but-small">Reset to Small Size</button>
+                <button id="sun-radius-but-big">Reset to Real Size</button>
             </div>
         `;
         container.appendChild(divSun);
@@ -89,20 +91,23 @@ window.addEventListener("load", async function(evt) {
             <div class="textbox-group">
                 <label for="${planet.name}-radius">Radius (Original ${planet.radius})</label>
                 <input type="text" id="${planet.name}-radius" value="${planet.radius}" step="0.01">
+                <button id="${planet.name}-radius-but">Reset</button>
             </div>
             <div class="textbox-group">
                 <label for="${planet.name}-rotSpeed">Rotation Speed (Original ${planet.rotSpeed})</label>
                 <input type="text" id="${planet.name}-rotSpeed" value="${planet.rotSpeed}" step="0.01">
+                <button id="${planet.name}-rotSpeed-but">Reset</button>
             </div>
             <div class="textbox-group">
                 <label for="${planet.name}-tranSpeed">Translation Speed (Original ${planet.tranSpeed})</label>
                 <input type="text" id="${planet.name}-tranSpeed" value="${planet.tranSpeed}" step="0.01">
+                <button id="${planet.name}-tranSpeed-but">Reset</button>
             </div>
             <div class="textbox-group">
             <label for="${planet.name}-orbitDist">Orbit Distance (Original ${planet.orbitDist})</label>
             <input type="text" id="${planet.name}-orbitDist" value="${planet.orbitDist}" step="0.01">
-            </div>
-        `;
+                <button id="${planet.name}-orbitDist-but">Reset</button>
+            </div>`;
             container.appendChild(div);
         }
 
@@ -130,6 +135,7 @@ window.addEventListener("load", async function(evt) {
             //Actualizar Anillo de saturno
             if (i == 5) {
                 geometry[2].updateScale(radius)
+                geometry[2].updatePos(planetPosAndRot(orbitDist, planet.planetRot))
             }
         }
     }
@@ -194,7 +200,23 @@ window.addEventListener("load", async function(evt) {
         }
     }
 
+    function setCloseDistanceWithSmallSun(){
+        document.getElementById('Sun-radius').value = sunSizeSmall;
+        resetPlanets()
+    }
 
+
+    function setSunRealRelativeSize() {
+        document.getElementById('Sun-radius').value = sunSize;
+        for (let i = 0; i < originalValues.length; i++) {
+            const planet = originalValues[i];
+            document.getElementById(`${planet.name}-orbitDist`).value = bigSunCloseDistances[i];
+            if(i == 5) {
+                geometry[2].updatePos(planetPosAndRot(bigSunCloseDistances[i], planet.planetRot))
+            }
+        }
+        updatePlanetsFromTextBoxes()
+    }
 
     const style = document.createElement('style');
     style.innerHTML = `
@@ -238,14 +260,52 @@ window.addEventListener("load", async function(evt) {
 
     createTextBoxes();
 
+    function addResetOnClicks() {
+
+        document.getElementById('sun-radius-but-small').addEventListener('click', () => {
+            document.getElementById('Sun-radius').value = sunSizeSmall;
+            updatePlanetsFromTextBoxes()
+        })
+        document.getElementById('sun-radius-but-big').addEventListener('click', setSunRealRelativeSize)
+
+
+        for (let i = 0; i < originalValues.length; i++) {
+            let planet = originalValues[i];
+            const resetRadius = function () {
+                document.getElementById(`${planet.name}-radius`).value = planet.radius;
+                updatePlanetsFromTextBoxes()
+            };
+            const resetRotacion = function () {
+                document.getElementById(`${planet.name}-rotSpeed`).value = planet.rotSpeed;
+                updatePlanetsFromTextBoxes()
+            };
+            const resetTranslation = function () {
+                document.getElementById(`${planet.name}-tranSpeed`).value = planet.tranSpeed;
+                updatePlanetsFromTextBoxes()
+            };
+            const restOrbit = function () {
+                document.getElementById(`${planet.name}-orbitDist`).value = planet.orbitDist;
+                updatePlanetsFromTextBoxes()
+            };
+
+
+            document.getElementById(`${planet.name}-radius-but`).addEventListener('click', resetRadius);
+            document.getElementById(`${planet.name}-rotSpeed-but`).addEventListener('click', resetRotacion);
+            document.getElementById(`${planet.name}-tranSpeed-but`).addEventListener('click', resetTranslation);
+            document.getElementById(`${planet.name}-orbitDist-but`).addEventListener('click', restOrbit);
+        }
+    }
+
+    addResetOnClicks()
     document.getElementById('planet-controls').addEventListener('input', updatePlanetsFromTextBoxes);
-    document.getElementById('reset_sun').addEventListener('click', resetSunSize);
+    //document.getElementById('reset_sun').addEventListener('click', resetSunSize);
     document.getElementById('reset_planets').addEventListener('click', resetPlanets);
     document.getElementById('reset_cam').addEventListener('click', resetCamera);
     document.getElementById('reset_all').addEventListener('click', resetAll);
     document.getElementById('set_camera').addEventListener('click', setCamera);
     document.getElementById('Play_pause').addEventListener('click', playPausePlanets)
     document.getElementById('restart').addEventListener('click', restartPlanets)
+    document.getElementById('reset_sun_move_planets').addEventListener('click', setSunRealRelativeSize)
 
     let camera = new MoveCamera(initCameraPos, initCameraCoi, initCameraUp);
     resetCamera();

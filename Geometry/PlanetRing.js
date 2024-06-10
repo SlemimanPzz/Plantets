@@ -9,8 +9,8 @@ class PlanetRing {
     this.rot = 0
     this.planetTranslate = planetTranslate;
 
-    let ringScale = Matrix4.scale(new Vector3(2*planetSize,0,2*planetSize))
-    let ringTranslate =Matrix4.multiply(planetTranslate,  ringScale);
+     this.ringScale = Matrix4.scale(new Vector3(2*planetSize,0,2*planetSize))
+    let ringTranslate =Matrix4.multiply(planetTranslate,  this.ringScale);
 
     this.transform = ringTranslate;
     this.iTransform = ringTranslate;
@@ -59,9 +59,14 @@ class PlanetRing {
     this.rot = 0;
     this.transform = this.iTransform;
   }
+
+  updatePos(pos) {
+    this.iTransform= Matrix4.multiply(pos,  this.ringScale);
+  }
+
   updateScale(scale){
-    let ringScale = Matrix4.scale(new Vector3(2*scale,0,2*scale))
-    this.iTransform =  Matrix4.multiply(this.planetTranslate, ringScale);
+    this.ringScale = Matrix4.scale(new Vector3(2*scale,0,2*scale))
+    this.iTransform =  Matrix4.multiply(this.planetTranslate, this.ringScale);
   }
     getThetaTranslation(elapse) {
     // Math.PI/30 = 30RPM = Math.PI * elapse con elapse aprox = 0.033
