@@ -8,17 +8,15 @@ window.addEventListener("load", async function(evt) {
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
     let texEarth = await loadImage("texturas/8k_earth_daymap.png");
-    let texMercury = await loadImage("texturas/mercurio.png");
+    let texMercury = await loadImage("texturas/2k_mercury.png");
     let texVenus = await loadImage("texturas/2k_venus_surface.png")
-    let texMarte = await loadImage("texturas/mars.png");
+    let texMarte = await loadImage("texturas/2k_mars.png");
     let texJupiter = await loadImage("texturas/2k_jupiter.png");
     let texSaturn = await loadImage("texturas/2k_saturn.png")
     let skyboxTex = await loadImage("texturas/2k_stars_milky_way.png");
     let saturnRing = await loadImage("texturas/saturn_ring.png")
     let texNeptune = await loadImage("texturas/2k_neptune.png")
     let texUranus = await loadImage("texturas/2k_uranus.png")
-
-
 
   function update(elapse) {
       geometry[0].update(camera.pos)
@@ -39,7 +37,7 @@ window.addEventListener("load", async function(evt) {
       //skybox
       new Skybox(gl, 500, 16, 16, new TextureMaterial(gl, skyboxTex)),
       //Sun
-      new Sun(gl, sunSizeSmall, new FlatMaterial(gl, [1,1,1,1]), Matrix4.translate(new Vector3(0, 0, 0))),
+      new Sun(gl, sunSizeSmall, new FlatMaterial(gl, [.95,.7,.07,1]), Matrix4.translate(new Vector3(0, 0, 0))),
       // Anillo Saturno
       new PlanetRing(gl, new TextureAlphaMaterial(gl, saturnRing), planetPosAndRot(60, .45), true, saturnTranslate, saturnSize),
       // Mercurio
@@ -171,6 +169,18 @@ window.addEventListener("load", async function(evt) {
     }
 
 
+
+    function setRealRelativeDistances(){
+        pausePlanets();
+        restartPlanets();
+        let startValue = parseFloat(document.getElementById(`Earth-orbitDist`).value)
+        for (let i = 0; i < originalValues.length; i++) {
+            const planet = originalValues[i];
+            document.getElementById(`${planet.name}-orbitDist`).value = startValue*realRelativeDistances[i];
+        }
+        updatePlanetsFromTextBoxes();
+    }
+
     function resetPlanets() {
         for (let i = 0; i < originalValues.length; i++) {
             const planet = originalValues[i];
@@ -200,6 +210,12 @@ window.addEventListener("load", async function(evt) {
         }
     }
 
+    function pausePlanets() {
+        for (let i=2; i<geometry.length; i++) {
+            geometry[i].updateFalse();
+        }
+    }
+
     function setCloseDistanceWithSmallSun(){
         document.getElementById('Sun-radius').value = sunSizeSmall;
         resetPlanets()
@@ -211,11 +227,15 @@ window.addEventListener("load", async function(evt) {
         for (let i = 0; i < originalValues.length; i++) {
             const planet = originalValues[i];
             document.getElementById(`${planet.name}-orbitDist`).value = bigSunCloseDistances[i];
+            // Anillo de saturno
             if(i == 5) {
                 geometry[2].updatePos(planetPosAndRot(bigSunCloseDistances[i], planet.planetRot))
             }
         }
         updatePlanetsFromTextBoxes()
+        // Apuntar a la tierra
+        camera.pos = new Vector3(120, 20, 0);
+        camera.coi = new Vector3(119, -1, -1)
     }
 
     const style = document.createElement('style');
@@ -298,7 +318,6 @@ window.addEventListener("load", async function(evt) {
 
     addResetOnClicks()
     document.getElementById('planet-controls').addEventListener('input', updatePlanetsFromTextBoxes);
-    //document.getElementById('reset_sun').addEventListener('click', resetSunSize);
     document.getElementById('reset_planets').addEventListener('click', resetPlanets);
     document.getElementById('reset_cam').addEventListener('click', resetCamera);
     document.getElementById('reset_all').addEventListener('click', resetAll);
@@ -306,6 +325,8 @@ window.addEventListener("load", async function(evt) {
     document.getElementById('Play_pause').addEventListener('click', playPausePlanets)
     document.getElementById('restart').addEventListener('click', restartPlanets)
     document.getElementById('reset_sun_move_planets').addEventListener('click', setSunRealRelativeSize)
+    document.getElementById('real_relative_distance').addEventListener('click', setRealRelativeDistances)
+    document.getElementById('close_and_small_sun').addEventListener('click', setCloseDistanceWithSmallSun)
 
     let camera = new MoveCamera(initCameraPos, initCameraCoi, initCameraUp);
     resetCamera();
@@ -369,11 +390,10 @@ window.addEventListener("load", async function(evt) {
     window.addEventListener("keydown", (evt) => {
         console.log(evt.key);
 
-        // tecla hacia arriba
         if (evt.key == "ArrowUp") {
             camera.moveForward();
         }
-        // tecla hacia abajo
+
         if (evt.key == "ArrowDown") {
             camera.moveBackward();
         }

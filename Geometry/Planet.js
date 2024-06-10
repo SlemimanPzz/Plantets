@@ -50,10 +50,12 @@ class Planet {
         this.rotacion = 0;
         this.translacion = 0;
         this.transform = this.iTransform;
+        this.update(0,true)
     }
 
     updatePos(pos) {
         this.iTransform = pos
+        this.update(0, true)
     }
 
     updateSize(scale){
@@ -80,8 +82,8 @@ class Planet {
 
 
     // Update esta hecho para que un año en la tierra sea 30 segundos
-    update(elapsed) {
-        if (this.toUpdate){
+    update(elapsed, forceUpdate =  false) {
+        if (this.toUpdate || forceUpdate){
             let rot = Matrix4.rotateY(this.rotacion += this.getThetaRotacion(elapsed)/this.rotSpeed/10);
             let inter = Matrix4.multiply(this.iTransform, rot);
             this.transform = Matrix4.multiply(Matrix4.rotateY(this.translacion += this.transSpeed*this.getThetaTranslation(elapsed)), inter);

@@ -1,3 +1,7 @@
+## Texturas
+
+Texturas obtenidas de [Solar Textures](https://www.solarsystemscope.com/textures/)
+
 ### Datos Planetarios
 Los datos para las orbitas y rotaciones de los plaentas fueron obteneidos de la [NASA Planetary Facts](https://nssdc.gsfc.nasa.gov/planetary/planetfact.html).
 

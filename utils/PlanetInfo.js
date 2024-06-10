@@ -46,16 +46,7 @@ let neptuneRotate = 16.1 * earthRotate;
 let neptuneTranslate = 0.0061 * earthTranslate;
 
 
-const realRelativeDistances = {
-    Mercury: 0.39,
-    Venus: 0.72,
-    Earth: 1,
-    Mars: 1.52,
-    Jupiter: 5.2,
-    Saturn: 9.54,
-    Uranus: 19.2,
-    Neptune: 30.06
-};
+const realRelativeDistances = [0.39, 0.72, 1, 1.52, 5.2, 9.54, 19.2, 30.06];
 
 const closeDistances = [4, 7, 10,14, 30, 60, 80, 90];
 const bigSunCloseDistances = closeDistances.map( value => value+109);
