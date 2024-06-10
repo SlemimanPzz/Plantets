@@ -75,8 +75,8 @@ window.addEventListener("load", async function(evt) {
             <div class="textbox-group">
                 <label for="Sun-radius">Radius (Original ${sunSize})</label>
                 <input type="text" id="Sun-radius" value="${sunSizeSmall}" step="0.01">
-                <button id="sun-radius-but-small">Reset to Small Size</button>
-                <button id="sun-radius-but-big">Reset to Real Size</button>
+                <button id="sun-radius-but-small" class="menu-button">Reset to Small Size</button>
+                <button id="sun-radius-but-big" class="menu-button">Reset to Real Size</button>
             </div>
         `;
         container.appendChild(divSun);
@@ -89,22 +89,22 @@ window.addEventListener("load", async function(evt) {
             <div class="textbox-group">
                 <label for="${planet.name}-radius">Radius (Original ${planet.radius})</label>
                 <input type="text" id="${planet.name}-radius" value="${planet.radius}" step="0.01">
-                <button id="${planet.name}-radius-but">Reset</button>
+                <button id="${planet.name}-radius-but" class="menu-button">Reset</button>
             </div>
             <div class="textbox-group">
                 <label for="${planet.name}-rotSpeed">Rotation Speed (Original ${planet.rotSpeed})</label>
                 <input type="text" id="${planet.name}-rotSpeed" value="${planet.rotSpeed}" step="0.01">
-                <button id="${planet.name}-rotSpeed-but">Reset</button>
+                <button id="${planet.name}-rotSpeed-but" class="menu-button">Reset</button>
             </div>
             <div class="textbox-group">
                 <label for="${planet.name}-tranSpeed">Translation Speed (Original ${planet.tranSpeed})</label>
                 <input type="text" id="${planet.name}-tranSpeed" value="${planet.tranSpeed}" step="0.01">
-                <button id="${planet.name}-tranSpeed-but">Reset</button>
+                <button id="${planet.name}-tranSpeed-but" class="menu-button">Reset</button>
             </div>
             <div class="textbox-group">
             <label for="${planet.name}-orbitDist">Orbit Distance (Original ${planet.orbitDist})</label>
             <input type="text" id="${planet.name}-orbitDist" value="${planet.orbitDist}" step="0.01">
-                <button id="${planet.name}-orbitDist-but">Reset</button>
+                <button id="${planet.name}-orbitDist-but" class="menu-button">Reset</button>
             </div>`;
             container.appendChild(div);
         }
@@ -212,7 +212,7 @@ window.addEventListener("load", async function(evt) {
     }
 
     function resetAll() {
-        resetSunSize();
+        document.getElementById('Sun-radius').value = sunSizeSmall;
         resetPlanets();
         resetCamera();
     }

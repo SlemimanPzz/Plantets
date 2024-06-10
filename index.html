@@ -32,6 +32,9 @@
       overflow: hidden;
       width: 100%;
       height: 100%;
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #e0e0e0;
     }
 
     canvas {
@@ -43,43 +46,94 @@
     .side-menu {
       position: absolute;
       top: 0;
-      width: 200px;
+      width: 250px;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
-      color: white;
+      background-color: rgba(0, 0, 0, 0.85);
+      color: #e0e0e0;
       padding: 20px;
       box-sizing: border-box;
       overflow-y: auto;
-      transition: right 0.3s;
+      transition: transform 0.3s ease-in-out;
     }
 
     #left-menu {
       left: 0;
+      transform: translateX(0);
     }
 
     #right-menu {
       right: 0;
+      transform: translateX(100%);
     }
 
-    #right-menu.hidden {
-      right: -220px; /* Adjust this if needed */
+    #right-menu.show {
+      transform: translateX(0);
     }
 
     .menu-title {
+      font-size: 24px;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    .menu-section {
+      margin-bottom: 20px;
+    }
+
+    .menu-section .menu-title {
       font-size: 20px;
       margin-bottom: 10px;
+      color: #ff9800;
+    }
+
+    .menu-button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+      background-color: #333;
+      border: 1px solid #555;
+      border-radius: 5px;
+      color: #e0e0e0;
+      cursor: pointer;
+      transition: background-color 0.2s ease-in-out;
+    }
+
+    .menu-button:hover {
+      background-color: #444;
+    }
+
+    .textbox-group {
+      margin: 10px 0;
+    }
+
+    .textbox-group label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .textbox-group input {
+      width: calc(100% - 12px);
+      padding: 5px;
+      margin-bottom: 10px;
+      border: 1px solid #555;
+      border-radius: 5px;
+      background-color: #222;
+      color: #e0e0e0;
     }
 
     #toggle-button {
       position: absolute;
       top: 20px;
-      right: 220px;
+      right: 250px;
       z-index: 10;
       padding: 10px 20px;
       background-color: rgba(0, 0, 0, 0.8);
       color: white;
       border: none;
       cursor: pointer;
+      border-radius: 5px;
     }
   </style>
 </head>
@@ -93,33 +147,37 @@
   <div id="planet-controls"></div>
 </div>
 
-<div id="right-menu" class="side-menu hidden">
-  <div class="menu-title">General Controls</div>
-  <div id="menu-controls"></div>
-  <button class="menu-button" id="reset_cam">Reset Camera</button>
-  <button class="menu-button" id="reset_planets">Reset Planets</button>
-  <button class="menu-button" id="set_camera">Set Camera</button>
-  <button class="menu-button" id="reset_all">Reset All</button>
-  <button class="menu-button" id="Play_pause">Play/Pause</button>
-  <button class="menu-button" id="restart">Restart</button>
-  <button class="menu-button" id="real_relative_distance">Set Real Relative Distances(Earth doesn't move)</button>
-  <button class="menu-button" id="close_and_small_sun">Close and Small sun</button>
-  <div class="menu-title">Camera Controls</div>
-  <div class="textbox-group">
-    <label>Camera Position</label>
-    <input type="number" id="cam-pos-x" placeholder="X">
-    <input type="number" id="cam-pos-y" placeholder="Y">
-    <input type="number" id="cam-pos-z" placeholder="Z">
+<div id="right-menu" class="side-menu">
+  <div class="menu-section">
+    <div class="menu-title">General Controls</div>
+    <button class="menu-button" id="reset_cam">Reset Camera</button>
+    <button class="menu-button" id="reset_planets">Reset Planets</button>
+    <button class="menu-button" id="set_camera">Set Camera</button>
+    <button class="menu-button" id="reset_all">Reset All</button>
+    <button class="menu-button" id="Play_pause">Play/Pause</button>
+    <button class="menu-button" id="restart">Restart</button>
+    <button class="menu-button" id="real_relative_distance">Set Real Relative Distances(Earth doesn't move)</button>
+    <button class="menu-button" id="close_and_small_sun">Close and Small sun</button>
   </div>
-  <div class="textbox-group">
-    <label>Camera COI</label>
-    <input type="number" id="cam-coi-x" placeholder="X">
-    <input type="number" id="cam-coi-y" placeholder="Y">
-    <input type="number" id="cam-coi-z" placeholder="Z">
-  </div>
-  <div>
-    <input type="number" id="speed" placeholder="Global Speed">
-    <button id="speed-button">Set Global Speed</button>
+  <div class="menu-section">
+    <div class="menu-title">Camera Controls</div>
+    <div class="textbox-group">
+      <label>Camera Position</label>
+      <input type="number" id="cam-pos-x" placeholder="X">
+      <input type="number" id="cam-pos-y" placeholder="Y">
+      <input type="number" id="cam-pos-z" placeholder="Z">
+    </div>
+    <div class="textbox-group">
+      <label>Camera COI</label>
+      <input type="number" id="cam-coi-x" placeholder="X">
+      <input type="number" id="cam-coi-y" placeholder="Y">
+      <input type="number" id="cam-coi-z" placeholder="Z">
+    </div>
+    <div class="textbox-group">
+      <label>Global Speed</label>
+      <input type="number" id="speed" placeholder="Global Speed">
+      <button class="menu-button" id="speed-button">Set Global Speed</button>
+    </div>
   </div>
 </div>
 
@@ -134,7 +192,7 @@
 
   function toggleRightMenu() {
     const rightMenu = document.getElementById('right-menu');
-    rightMenu.classList.toggle('hidden');
+    rightMenu.classList.toggle('show');
   }
 
   window.addEventListener('resize', resizeCanvas);
