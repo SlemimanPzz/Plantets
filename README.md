@@ -37,3 +37,5 @@ y Urano cerca de 90°. Los planetas se muestran en orden
 - Con un botton puedes cambiar las distancias a las distancias verdaras relativas, con base a la tierra como 1.
 - Con otro botton puedes agrupar a los planetas
 - Puedes cambiar la velocidad global, todo rotara y se transladara mas rapido
+- Se puede mover hacia deltante la camara presionando W/UpArrow y hacia atras con S/DownArrow
+- Puedes cambiar a donde esta apuntando la camara con el mouse + Click
