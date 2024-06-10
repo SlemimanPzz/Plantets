@@ -124,6 +124,7 @@ window.addEventListener("load", async function(evt) {
             const tranSpeed = parseFloat(document.getElementById(`${planet.name}-tranSpeed`).value);
             const orbitDist = parseFloat(document.getElementById(`${planet.name}-orbitDist`).value);
 
+            // +3 por que 0 es skybox, 1 es el sol y 2 es el anillo de saturno
             if (!isNaN(radius) && !isNaN(rotSpeed) && !isNaN(tranSpeed)) {
                 geometry[i + 3].updateSize(radius);
                 geometry[i + 3].updateRotSpeed(rotSpeed);
@@ -143,6 +144,7 @@ window.addEventListener("load", async function(evt) {
         document.getElementById('Sun-radius').value = sunSize;
         updatePlanetsFromTextBoxes();
     }
+
     function resetCamera() {
         camera.pos = initCameraPos;
         camera.coi = initCameraCoi;
@@ -186,7 +188,6 @@ window.addEventListener("load", async function(evt) {
         document.getElementById('speed').value = 1
         updatePlanetsFromTextBoxes()
     }
-
 
 
     function setRealRelativeDistances(){

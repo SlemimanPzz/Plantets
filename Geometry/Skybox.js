@@ -4,14 +4,11 @@ class Skybox {
     constructor(gl, radius=1, Nu=8, Nv=8, material=new FlatMaterial(gl), transform=identity) {
         this.material = material;
         this.transform = transform;
-        this.iTransform = transform;
 
         this.r = radius;
         this.Nu = Nu;
         this.Nv = Nv;
 
-        this.translacion = 0;
-        this.rotacion = 0;
         this.init(gl);
     }
 
@@ -29,6 +26,9 @@ class Skybox {
     }
 
 
+    /**
+     * El skybox se actualiza con la poscion de la camara para que el usuario nunca pueda salir de esta
+     */
     update(cameraPos) {
         this.transform = Matrix4.translate(cameraPos);
     }

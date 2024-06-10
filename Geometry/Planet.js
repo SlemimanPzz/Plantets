@@ -12,8 +12,8 @@ class Planet {
         this.gl = gl
 
         this.r = radius;
-        this.Nu = 32;
-        this.Nv = 32;
+        this.Nu = 32; // Modificar si es necesario
+        this.Nv = 32; // Modificar si es necesario
 
         this.translacion = 0;
         this.rotacion = 0;
@@ -81,7 +81,7 @@ class Planet {
     }
 
 
-    // Update esta hecho para que un año en la tierra sea 30 segundos
+    // Update esta hecho para que un año en la tierra sean alrededor  30 segundos
     update(elapsed, forceUpdate =  false) {
         if (this.toUpdate || forceUpdate){
             let rot = Matrix4.rotateY(this.rotacion += this.getThetaRotacion(elapsed)/this.rotSpeed/10);
@@ -258,6 +258,7 @@ class Planet {
         ////////////////////////////////////////////////////////////
 
 
+        // El Smooth sading genera un resultado mas placentero pero la proyeion UV tiene unos errores
         // Smooth shading
             //gl.bindVertexArray(this.smoothVAO);
             //gl.drawElements(gl.TRIANGLES, this.num_smooth_elements, gl.UNSIGNED_SHORT, 0);
