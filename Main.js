@@ -133,6 +133,7 @@ window.addEventListener("load", async function(evt) {
             //Actualizar Anillo de saturno
             if (i == 5) {
                 geometry[2].updateScale(radius)
+                geometry[2].updateRotSpeed(tranSpeed)
                 geometry[2].updatePos(planetPosAndRot(orbitDist, planet.planetRot))
             }
         }
@@ -166,6 +167,24 @@ window.addEventListener("load", async function(evt) {
             camera.pos = new Vector3(posX, posY, posZ);
             camera.coi = new Vector3(coiX, coiY, coiZ);
         }
+    }
+
+
+    function setGlobalSpeed() {
+        const globalMod = parseFloat(document.getElementById('speed').value)
+        if (!isNaN(globalMod)) {
+            for (let i = 0; i < originalValues.length; i++) {
+                const planet = originalValues[i];
+                document.getElementById(`${planet.name}-rotSpeed`).value *= globalMod;
+                document.getElementById(`${planet.name}-tranSpeed`).value *= globalMod;
+                if(i == 5) {
+                    geometry[2].updateRotSpeed(parseFloat(document.getElementById(`${planet.name}-tranSpeed`).value))
+                }
+            }
+
+        }
+        document.getElementById('speed').value = 1
+        updatePlanetsFromTextBoxes()
     }
 
 
@@ -327,6 +346,7 @@ window.addEventListener("load", async function(evt) {
     document.getElementById('reset_sun_move_planets').addEventListener('click', setSunRealRelativeSize)
     document.getElementById('real_relative_distance').addEventListener('click', setRealRelativeDistances)
     document.getElementById('close_and_small_sun').addEventListener('click', setCloseDistanceWithSmallSun)
+    document.getElementById('speed-button').addEventListener('click', setGlobalSpeed)
 
     let camera = new MoveCamera(initCameraPos, initCameraCoi, initCameraUp);
     resetCamera();

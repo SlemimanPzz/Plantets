@@ -63,7 +63,8 @@ class PlanetRing {
 
   updatePos(pos) {
     this.iTransform= Matrix4.multiply(pos,  this.ringScale);
-    this.update(0, true)}
+    this.update(0, true)
+  }
 
   updateScale(scale){
     this.ringScale = Matrix4.scale(new Vector3(2*scale,0,2*scale))
@@ -72,6 +73,10 @@ class PlanetRing {
     getThetaTranslation(elapse) {
     // Math.PI/30 = 30RPM = Math.PI * elapse con elapse aprox = 0.033
     return Math.PI * elapse/15
+  }
+
+  updateRotSpeed(rotSpeed) {
+    this.rotSpeed = rotSpeed;
   }
 
   // Update esta hecho para que un año en la tierra sea 30 segundos
