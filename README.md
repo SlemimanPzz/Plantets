@@ -1,41 +1,38 @@
-# Sistema Solar
+# Solar System
 
-## Texturas
+## Textures
 
-Texturas obtenidas de [Solar Textures](https://www.solarsystemscope.com/textures/)
+Textures obtained from [Solar Textures](https://www.solarsystemscope.com/textures/)
 
-### Datos Planetarios
-Los datos para las orbitas y rotaciones de los plaentas fueron obteneidos de la [NASA Planetary Facts](https://nssdc.gsfc.nasa.gov/planetary/planetfact.html).
+### Planetary Data
+The data for planetary orbits and rotations were sourced from [NASA Planetary Facts](https://nssdc.gsfc.nasa.gov/planetary/planetfact.html).
 
-> **NOTA: Se estan tomando orbitas circulares, las orbitas en la realidad son elipses. Tambien la velocidad de los planetas es constante, en la realidad varia**
+> **NOTE: Circular orbits are being used; in reality, orbits are elliptical. Additionally, the speed of the planets is constant, whereas in reality, it varies.**
 
-## Desarolllo
+## Development
 
-Para el desarollo se baso principalmente en la geometria de circulo, modificandola un
-poco y agregando y eliminado cosas conforme se viese necesario.
-Tambien se agrego al geometria del plano para el anillo de saturno.
+The project was developed entirely using **JavaScript** and **WebGL**, without relying on any external libraries for mathematical, matrix, or vector operations. All calculations, including transformations, rotations, and projections, were custom-implemented to ensure complete control over the rendering process and to provide a deeper understanding of the mechanics involved.
 
-### Lo que se muestra
+The development focused primarily on circle geometry, with modifications and adjustments made as necessary. Plane geometry was also added for Saturn's rings.
 
-Se empieza mostradno el sistema solar con los planetas con el tamaño
-relativo entre ellos real. A la izquierda un menu para controlar a los planetas y
-a la derecha se peude ver un botton para obtener controles mas generales y algunos extras.
-Los planetas rotan con su eje de rotacion real, es decir la tierra esta inclinada 23°
-y Urano cerca de 90°. Los planetas se muestran en orden
+### What is displayed
 
-### Lo que se puede hacer
+The solar system is initially shown with the planets at their real relative sizes. On the left, there is a menu to control the planets, and on the right, there is a button to access more general controls and some extras.  
+The planets rotate on their real axes of rotation; for instance, the Earth is tilted at 23°, and Uranus is tilted at nearly 90°. The planets are displayed in order.
 
-- Modificar el tamaño del sol al deseado.
-- Un botton para rapidamente hacer todo, inlcuido el sol, con tamaños relativos reales y mover los planetas fuera del sol y apuntar la camara a la tierra.
-- Puedes controlar los 4 atributos principales de los planetas, su tamaño, su velocidad de rotacion, su velocidad de translacion y su orbita, los dos intermedios con relacion a la tierra.
-- Puedes resetear la camara a su pocision original
-- Puedes resetear todos los valores de los planetas a los valores iniciales
-- Puedes posicionar la camara con los datos proporcionados
-- Puedes resetear todo al estado inicial
-- Puedes pausar o renaduar la animacion
-- Puedes reiniciar la poscion de los planetas
-- Con un botton puedes cambiar las distancias a las distancias verdaras relativas, con base a la tierra como 1.
-- Con otro botton puedes agrupar a los planetas
-- Puedes cambiar la velocidad global, todo rotara y se transladara mas rapido
-- Se puede mover hacia deltante la camara presionando W/UpArrow y hacia atras con S/DownArrow
-- Puedes cambiar a donde esta apuntando la camara con el mouse + Click
+### Features
+
+- Adjust the Sun's size as desired.
+- A button to quickly set everything, including the Sun, to their real relative sizes, move the planets out of the Sun, and point the camera at Earth.
+- Control the four main attributes of the planets: size, rotation speed, translation speed, and orbit. The middle two are relative to Earth.
+- Reset the camera to its original position.
+- Reset all planet values to their initial settings.
+- Position the camera using provided data.
+- Reset everything to the initial state.
+- Pause or resume the animation.
+- Reset the position of the planets.
+- A button to switch distances to their true relative values, based on Earth as 1.
+- Another button to group the planets.
+- Change the global speed, making everything rotate and translate faster.
+- Move the camera forward using W/UpArrow and backward with S/DownArrow.
+- Adjust where the camera is pointing using the mouse + Click.
